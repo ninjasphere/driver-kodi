@@ -69,6 +69,7 @@ func NewMediaPlayer(driver ninja.Driver, conn *ninja.Connection, id string, clie
 		player.Log().Fatalf("Failed to enable volume channel: %s", err)
 	}
 
+	player.ApplyPlaylistJump = device.applyPlaylistJump
 	player.ApplyPlayPause = device.applyPlayPause
 	if err := player.EnableControlChannel([]string{"playing", "paused", "stopped", "buffering", "busy", "idle", "inactive"}); err != nil {
 		player.Log().Fatalf("Failed to enable control channel: %s", err)
@@ -81,7 +82,8 @@ func NewMediaPlayer(driver ninja.Driver, conn *ninja.Connection, id string, clie
 			toggle = !toggle
 			value = value + 0.05
 
-			err := device.applyPlayPause(toggle)
+			err = device.applyPlaylistJump(1)
+			//err := device.applyPlayPause(toggle)
 
 			//err := device.applyVolume(&channels.VolumeState{
 			//	Level: &value,
@@ -146,6 +148,31 @@ func (d *MediaPlayer) getPlayerId() (int, error) {
 	}
 
 	return int(result[0].(map[string]interface{})["playerid"].(float64)), nil
+}
+
+func (d *MediaPlayer) applyPlaylistJump(delta int) error {
+
+	playerId, err := d.getPlayerId()
+	if err != nil {
+		return err
+	}
+
+	target := "next"
+	if delta < 0 {
+		target = "previous"
+	}
+
+	var result string
+
+	err = d.call("Player.GoTo", map[string]interface{}{
+		"playerid": playerId,
+		"to":       target,
+	}, &result, time.Second*5)
+
+	log.Infof("Result from playlist jump: %s", result)
+
+	return err
+
 }
 
 func (d *MediaPlayer) applyPlayPause(play bool) error {
