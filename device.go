@@ -74,7 +74,7 @@ func NewMediaPlayer(driver ninja.Driver, conn *ninja.Connection, id string, clie
 		player.Log().Fatalf("Failed to enable control channel: %s", err)
 	}
 
-	toggle := true
+	/*toggle := true
 	value := 0.0
 	go func() {
 		for {
@@ -91,7 +91,7 @@ func NewMediaPlayer(driver ninja.Driver, conn *ninja.Connection, id string, clie
 			}
 			time.Sleep(time.Second * 1)
 		}
-	}()
+	}()*/
 
 	go func() {
 		for notification := range client.Notifications {
