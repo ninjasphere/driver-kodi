@@ -72,5 +72,7 @@ func (d *Driver) Start(_ interface{}) error {
 		mdns.Query(params)
 	}()
 
+	//spew.Dump(goupnp.DiscoverDevices("uuid:251ddbdc-effa-be48-4b16-fd46ad72bd73"))
+
 	return nil
 }
