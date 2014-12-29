@@ -1,4 +1,4 @@
 driver-kodi
-===========
+====================
 
-Ninja Sphere - Driver for Kodi (née Xbmc)
+Ninja Sphere - Kodi (Xbmc) Driver

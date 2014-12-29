@@ -1,0 +1,10 @@
+{
+  "id": "com.ninjablocks.kodi",
+  "name": "Kodi Driver",
+  "version": "0.1.0",
+  "description": "Exports any Kodi (xbmc) instances as Ninja Sphere devices",
+  "main": "driver-kodi",
+  "author": "Elliot Shepherd <elliot@ninjablocks.com>",
+  "license": "MIT",
+  "maxMemory": 10
+}
