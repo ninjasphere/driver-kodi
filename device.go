@@ -81,13 +81,15 @@ func NewMediaPlayer(driver ninja.Driver, conn *ninja.Connection, id string, clie
 			toggle = !toggle
 			value = value + 0.05
 
-			err := device.applyVolume(&channels.VolumeState{
-				Level: &value,
-				Muted: &toggle,
-			})
+			err := device.applyPlayPause(toggle)
+
+			//err := device.applyVolume(&channels.VolumeState{
+			//	Level: &value,
+			//	Muted: &toggle,
+			//})
 
 			if err != nil {
-				log.Fatalf("Failed to set volume: %s", err)
+				log.Warningf("Failed to set play/pause: %s", err)
 			}
 			time.Sleep(time.Second * 1)
 		}
@@ -95,7 +97,15 @@ func NewMediaPlayer(driver ninja.Driver, conn *ninja.Connection, id string, clie
 
 	go func() {
 		for notification := range client.Notifications {
-			if notification.Method == "Application.OnVolumeChanged" {
+
+			switch notification.Method {
+			case "Player.OnPlay":
+				player.UpdateControlState(channels.MediaControlEventPlaying)
+			case "Player.OnPause":
+				player.UpdateControlState(channels.MediaControlEventPaused)
+			case "Player.OnStop":
+				player.UpdateControlState(channels.MediaControlEventStopped)
+			case "Application.OnVolumeChanged":
 				var volume VolumeNotification
 				err := notification.Read(&volume)
 				if err != nil {
@@ -115,6 +125,7 @@ func NewMediaPlayer(driver ninja.Driver, conn *ninja.Connection, id string, clie
 
 				}
 			}
+
 			//spew.Dump("notification", notification)
 		}
 	}()
@@ -128,6 +139,10 @@ func (d *MediaPlayer) getPlayerId() (int, error) {
 
 	if err != nil {
 		return 0, fmt.Errorf("Failed to get active player id: %s", err)
+	}
+
+	if len(result) == 0 {
+		return 0, fmt.Errorf("The player is not active")
 	}
 
 	return int(result[0].(map[string]interface{})["playerid"].(float64)), nil
