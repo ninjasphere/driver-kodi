@@ -5,7 +5,6 @@ import (
 	"math"
 	"time"
 
-	"github.com/ninjasphere/go-castv2/controllers"
 	"github.com/ninjasphere/go-ninja/api"
 	"github.com/ninjasphere/go-ninja/channels"
 	"github.com/ninjasphere/go-ninja/devices"
@@ -14,10 +13,8 @@ import (
 )
 
 type MediaPlayer struct {
-	player   *devices.MediaPlayerDevice
-	client   kodi_jsonrpc.Connection
-	receiver *controllers.ReceiverController
-	media    *controllers.MediaController
+	player *devices.MediaPlayerDevice
+	client kodi_jsonrpc.Connection
 }
 
 type VolumeNotification struct {
@@ -97,6 +94,8 @@ func NewMediaPlayer(driver ninja.Driver, conn *ninja.Connection, id string, clie
 		}
 	}()*/
 
+	var batteryChannel *channels.BatteryChannel
+
 	go func() {
 		for notification := range client.Notifications {
 
@@ -126,6 +125,23 @@ func NewMediaPlayer(driver ninja.Driver, conn *ninja.Connection, id string, clie
 					}
 
 				}
+			default:
+
+				if batteryChannel == nil {
+					batteryChannel = channels.NewBatteryChannel(player)
+
+					events := []string{"warning"}
+
+					err = conn.ExportChannelWithSupported(player, batteryChannel, "battery", nil, &events)
+					if err != nil {
+						log.Fatalf("Failed to create battery channel: %s", err)
+					}
+				}
+
+				if err = batteryChannel.SendWarning(); err != nil {
+					log.Warningf("Failed to send battery warning: %s", err)
+				}
+
 			}
 
 			//spew.Dump("notification", notification)
