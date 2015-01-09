@@ -2,8 +2,8 @@
 set -xe
 
 OWNER=ninjasphere
-BIN_NAME=driver-go-chromecast
-PROJECT_NAME=driver-go-chromecast
+BIN_NAME=driver-kodi
+PROJECT_NAME=driver-kodi
 
 
 # Get the parent directory of where this script is.
