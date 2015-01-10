@@ -50,7 +50,7 @@ The follwoing instructions were collected from the discussion in  [#3](/../../is
 ### Requirements
 
 #### GoLang
-Install golang with cross compilation capabilities, since you will be compiling the driver for linux/arm (this is of course not needed if you are buidling from a linux/arm machine).
+Install golang with cross compilation capabilities, since you will be compiling the driver for linux/arm (this is of course not needed if you are building from a linux/arm machine).
 
 Some pointers for installing golang with cross compilation capability:
 - https://coderwall.com/p/pnfwxg/cross-compiling-golang
@@ -62,13 +62,12 @@ Your Spheramid should be accessible using the hostname `ninjasphere` or `ninjasp
 
 ```bash
 ssh ninja@ninjasphere
-# type in password: <default pass is temppwd>
+# type in password: <default password is temppwd>
 ```
 
 #### Prepare the Spheramid to receive the new driver
 
-The spheramid root file system is mounted read-only. That means you won't be immediately able to deploy the driver in there.
-You need to first enable read-write on the root file system, then create a directory for the new driver.
+The spheramid root file system is mounted read-only. You will need to first enable read-write on the root file system, and create a directory for the new driver.
 
 In the spheramid:
 ```bash
