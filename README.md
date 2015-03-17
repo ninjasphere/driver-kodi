@@ -22,6 +22,7 @@ This is a Ninja Sphere driver for Kodi (previously known as Xbmc) that exposes a
 | battery | [http://schema.ninjablocks.com/protocol/battery](https://github.com/ninjasphere/schemas/blob/master/protocol/battery.json) |   | warning |
 
 ### To Do
+* Configuration UI (to find instances by IP)
 * Notifications
 * Media metadata
 * Remote control? (up down left right etc...)
